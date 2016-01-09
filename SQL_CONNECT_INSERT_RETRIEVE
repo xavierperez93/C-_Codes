@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+namespace ConsoleNorthwind
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {//creation d'une connexion a la base de donnees en utilisant une authentification Integre User Id=userID ;Pwd=password en cas de connexion non integre
+            using (SqlConnection maConnection = new SqlConnection(@"Server=DESKTOP-GO62NUR; database=emertic; Integrated Security=true;")){
+                try
+                {  /***Comment inserer des données**/
+                       maConnection.Open();//Ouverture de la connexion
+                       SqlCommand CmdSQL = new SqlCommand();
+                       CmdSQL.Connection = maConnection;//declaration de la connexion que SqlCommand doit utiliser
+                       CmdSQL.CommandText = "Insert into civilite values(3,'Mademoiselle')";
+                       CmdSQL.ExecuteNonQuery();
+                       maConnection.Close();//Fermeture de la connexion .
+                    
+
+                    /**Comment afficher des données**/                       
+                       maConnection.Open();//Ouverture de la connexion
+                       CmdSQL.Connection = maConnection;//declaration de la connexion que SqlCommand doit utiliser
+                       SqlDataReader myReader = null;
+                       CmdSQL.CommandText = "Select * From civilite";//Ici on  met notre requete
+                       myReader = CmdSQL.ExecuteReader();
+                       while (myReader.Read())//On utilisera la boucle pour afficher nos différents enregistrement
+                        {
+                            Console.WriteLine(myReader["id"].ToString() + " " + myReader["civilite"]);//Affiche l'identifiant et la civilite par ligne
+                        }
+                       maConnection.Close();//Fermeture de la connexion .
+                        
+
+                }
+                catch (Exception e)
+                {
+
+                    Console.WriteLine(e.Message.ToString());
+                   
+                }
+            }
+            Console.WriteLine("Tout marche bien !");
+            Console.ReadLine();
+        }
+    }
+}
